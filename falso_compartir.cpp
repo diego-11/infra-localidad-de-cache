@@ -23,15 +23,17 @@ const int LINEA = 64;  // bytes de una línea de caché
 // vuelta vaya a memoria, incrementar a través de un puntero volatile:
 //   volatile long *c = &contadores[id];  *c = *c + 1;
 void pegados(vector<long> &contadores) {
-
+       vector<thread> hilos;
        for (int id = 0; id < HILOS; ++id) {
-        thread([id, &contadores] {
-          volatile long *c = &contadores[id];
-          for (long i = 0; i < VUELTAS; ++i) {
-            *c = *c + 1;
-          }
-        }).detach();
-      }
+              hilos.emplace_back([id, &contadores] {
+                     volatile long *c = &contadores[id];
+                     for (long i = 0; i < VUELTAS; ++i) {
+                            *c = *c + 1;
+                     }
+              });
+       }
+       for (thread &hilo : hilos) hilo.join();
+
 }
 
 // TODO: la misma cuenta, pero con los contadores separados lo suficiente para
@@ -39,15 +41,16 @@ void pegados(vector<long> &contadores) {
 // HILOS * (LINEA / sizeof(long)) posiciones y usar solo una de cada grupo.
 
 void separados(vector<long> &contadores) {
-       
-  for (int id = 0; id < HILOS; ++id) {
-    thread([id, &contadores] {
-      volatile long *c = &contadores[id * (LINEA / sizeof(long))];
-      for (long i = 0; i < VUELTAS; ++i) {
-        *c = *c + 1;
-      }
-    }).detach();
-  }
+       vector<thread> hilos;
+       for (int id = 0; id < HILOS; ++id) {
+              hilos.emplace_back([id, &contadores] {
+                     volatile long *c = &contadores[id * (LINEA / sizeof(long))];
+                     for (long i = 0; i < VUELTAS; ++i) {
+                            *c = *c + 1;
+                     }
+              });
+       }
+       for (thread &hilo : hilos) hilo.join();
 }
 
 int main() {
