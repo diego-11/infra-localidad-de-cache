@@ -1,0 +1,2 @@
+filas 4 ms suma 4194304
+columnas 42 ms suma 4194304
