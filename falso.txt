@@ -1,0 +1,2 @@
+pegados 0 ms suma 622840
+separados 0 ms suma 917016

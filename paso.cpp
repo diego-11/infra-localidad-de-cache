@@ -16,6 +16,10 @@ const size_t N = 32 * 1024 * 1024;  // 32 Mi enteros: 128 MiB
 // y devolver cuántas posiciones se tocaron.
 size_t recorrer(vector<int> &a, size_t paso) {
   size_t operaciones = 0;
+  for (size_t i = 0; i < N; i += paso) {
+    a[i] *= 3;
+    ++operaciones;
+  }
   return operaciones;
 }
 
